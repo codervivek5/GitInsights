@@ -3,7 +3,8 @@
 A modern, elegant GitHub repository analytics tool that provides detailed insights and visualizations for public GitHub repositories.
 
 #Preview 
-![image](https://github.com/user-attachments/assets/e5e88a3b-af84-4e84-ae68-925885d986be)
+![image](https://github.com/user-attachments/assets/2e63480b-943a-4cd4-9f4a-7995b69cd75e)
+
 
 
 ## ⚠️ Important Note
