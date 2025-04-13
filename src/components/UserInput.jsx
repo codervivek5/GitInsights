@@ -32,7 +32,7 @@ const UserInput = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!username) {
+    if (!username.trim()) {
       setError('Please enter a GitHub username');
       return;
     }
@@ -40,27 +40,47 @@ const UserInput = () => {
     setLoading(true);
     setError('');
     setRepositories([]);
+    
     try {
-      // First, get user info
-      const userResponse = await fetch(`https://api.github.com/users/${username}`);
-      if (!userResponse.ok) {
-        throw new Error('User not found');
+      // First, get user info with error handling
+      const userResponse = await fetch(`https://api.github.com/users/${username.trim()}`);
+      const userStatus = userResponse.status;
+      
+      if (userStatus === 404) {
+        throw new Error('GitHub user not found. Please check the username and try again.');
+      } else if (userStatus === 403) {
+        throw new Error('API rate limit exceeded. Please try again later.');
+      } else if (!userResponse.ok) {
+        throw new Error('Failed to fetch user data. Please try again.');
       }
       
       // Then get all repositories sorted by stars
-      const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?sort=stars&per_page=100`);
-      if (!reposResponse.ok) {
-        throw new Error('Failed to fetch repositories');
+      const reposResponse = await fetch(`https://api.github.com/users/${username.trim()}/repos?sort=stars&per_page=100`);
+      const reposStatus = reposResponse.status;
+      
+      if (reposStatus === 404) {
+        throw new Error('No repositories found for this user.');
+      } else if (reposStatus === 403) {
+        throw new Error('API rate limit exceeded. Please try again later.');
+      } else if (!reposResponse.ok) {
+        throw new Error('Failed to fetch repositories. Please try again.');
       }
       
       const data = await reposResponse.json();
+      
       if (data.length === 0) {
-        setError('No repositories found');
+        setError('This user has no public repositories.');
       } else {
-        setRepositories(data);
+        // Filter out private repositories
+        const publicRepos = data.filter(repo => !repo.private);
+        if (publicRepos.length === 0) {
+          setError('This user has no public repositories.');
+        } else {
+          setRepositories(publicRepos);
+        }
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AdvancedAnalytics from '../components/AdvancedAnalytics';
+import CollaborationMetrics from '../components/CollaborationMetrics';
 import { motion } from 'framer-motion';
 import { Box, Container, Grid, Paper, Typography, CircularProgress, Avatar, Chip, LinearProgress, IconButton, Tooltip } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { GitHub, Star, AccountTree, BugReport, People, Merge, Code, Language, Schedule, CalendarMonth, Download, Share, Analytics } from '@mui/icons-material';
+import { GitHub, Star, AccountTree, BugReport, People, Merge, Code, Language, Schedule, CalendarMonth, Download, Share, Analytics, Group } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -552,6 +553,24 @@ const Repository = () => {
                     </Typography>
                   </Box>
                   <AdvancedAnalytics owner={owner} repo={repo} />
+                </Paper>
+              </motion.div>
+            </Grid>
+
+            {/* Collaboration Metrics Section */}
+            <Grid item xs={12}>
+              <motion.div variants={itemVariants}>
+                <Paper
+                  elevation={0}
+                  sx={cardStyles}
+                >
+                  <Box sx={headerStyles}>
+                    <Group />
+                    <Typography variant="h6">
+                      Collaboration Insights
+                    </Typography>
+                  </Box>
+                  <CollaborationMetrics owner={owner} repo={repo} />
                 </Paper>
               </motion.div>
             </Grid>
